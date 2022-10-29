@@ -3,6 +3,7 @@
 
 bool mflag = false;
 int X, Y = 0;
+POINT pos; RECT rc;
 
 int CALLBACK WinMain(
 	_In_ HINSTANCE hInstance,// Ќачальный адрес программы(дескриптор)
@@ -105,38 +106,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DrawBall(hWnd);
 		break;
 	case WM_TIMER:
-		if (mflag) {
-			POINT pos; RECT rc;
-			GetCursorPos(&pos);
-			GetClientRect(hWnd, &rc);
-			MapWindowPoints(hWnd, GetParent(hWnd), (LPPOINT)&rc, 2);
-			ball.X = pos.x - rc.left;
-			ball.Y = pos.y - rc.top;
-			InvalidateRect(hWnd, NULL, TRUE);
-			RecalculateBallPosition();
-		}
-		if (TopHitten()) {
-			//SetUpDownHit();
-			//SetUpDownBoundHit();
-			ball.Y = 0.0;
-			SetUpDownBoundHit();
-		
-			
-		}
-		if (BottomHitten()) { ball.directionY = UP; }
-		if (LeftHitten()) { ball.directionX = RIGHT; }
-		if (RightHitten()) { SetUpLeftHit(); }
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
-			
-
-		/*
-		RecalculateBallSpeed();
-		RecalculateBallPosition();
-		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисовани€*/
+		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисовани€
 		break;
 	case WM_LBUTTONDOWN: // mouse click
-		mflag = true;
+	
+		GetCursorPos(&pos);
+		ScreenToClient(hWnd, &pos);
+		SetRect(&rc, ball.X - ball.Radius, ball.Y - ball.Radius, ball.X + ball.Radius, ball.Y + ball.Radius);
+		if (PtInRect(&rc, pos)) {
+			mflag = true;
+		}
+		break;
+	case WM_MOUSEMOVE:
+		if (mflag == true) {
+			GetCursorPos(&pos);
+			ScreenToClient(hWnd, &pos);
+			ball.X = pos.x;
+			ball.Y = pos.y;
+			if (TopHitten()) {
+				SetUpDownHit();
+				mflag = false;
+			}
+			if (BottomHitten()) {
+				SetUpUpHit();
+				mflag = false;
+			}
+			if (LeftHitten()) {
+				SetUpRightHit();
+				mflag = false;
+			}
+			if (RightHitten()) {
+				SetUpLeftHit();
+				mflag = false;
+			}
+		}
 		break;
 	case WM_LBUTTONUP:
 		mflag = false;
@@ -220,6 +225,7 @@ BOOL DrawBitmap(HDC hDC, int x, int y, HBITMAP hBitmap)
 	POINT ptSize, ptOrg;
 
 	hMemDC = CreateCompatibleDC(hDC); // creating memory context, that is compatible with hDC
+	//„тобы приложени€ могли размещать выходные данные в пам€ти, а не отправл€ть их на фактическое устройство
 	if (hMemDC == NULL) {
 		return FALSE;
 	}
@@ -327,12 +333,6 @@ void SetUpDownHit()
 	ball.BoostY = BOOST;
 }
 
-void SetUpDownBoundHit() {
-	ball.directionY = DOWN;
-	ball.SpeedY = BOUND_SPEED;
-	ball.BoostY = BOUND_BOOST;
-}
-
 BOOL LeftHitten()
 {
 	if (ball.X - ball.Radius <= 0) { return TRUE; }	else { return FALSE; }
@@ -350,5 +350,5 @@ BOOL TopHitten()
 
 BOOL BottomHitten()
 {
-	if (ball.Y + ball.Radius >= WND_HEIGHT) { return TRUE; } else { return FALSE; }
+	if (ball.Y + ball.Radius >= WND_HEIGHT - 20) { return TRUE; } else { return FALSE; }
 }

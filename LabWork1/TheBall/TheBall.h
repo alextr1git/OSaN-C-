@@ -30,9 +30,7 @@ int timer = 1;
 HBITMAP hBmpBall;
 
 constexpr auto START_SPEED = 20.0;
-constexpr auto BOUND_SPEED = 60.0;
 constexpr auto BOOST = 0.25;
-constexpr auto BOUND_BOOST = 0.5;
 constexpr auto ALLOWED_FAULT = 1.0;
 
 // Forward declarations of functions included in this code module:
@@ -42,7 +40,6 @@ void SetUpLeftHit();
 void SetUpRightHit();
 void SetUpUpHit();
 void SetUpDownHit();
-void SetUpDownBoundHit();
 
 BOOL LeftHitten();
 BOOL RightHitten();
