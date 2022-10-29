@@ -115,9 +115,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			InvalidateRect(hWnd, NULL, TRUE);
 			RecalculateBallPosition();
 		}
-		//	if ((ball.SpeedX == 0) && (ball.SpeedY == 0)) { break; }
-			RecalculateBallSpeed();
-			RecalculateBallPosition();
+		if (TopHitten()) {
+			//SetUpDownHit();
+			//SetUpDownBoundHit();
+			ball.Y = 0.0;
+			SetUpDownBoundHit();
+		
+			
+		}
+		if (BottomHitten()) { ball.directionY = UP; }
+		if (LeftHitten()) { ball.directionX = RIGHT; }
+		if (RightHitten()) { SetUpLeftHit(); }
+		RecalculateBallSpeed();
+		RecalculateBallPosition();
 			
 
 		/*
@@ -315,6 +325,12 @@ void SetUpDownHit()
 	ball.directionY = DOWN;
 	ball.SpeedY = START_SPEED;
 	ball.BoostY = BOOST;
+}
+
+void SetUpDownBoundHit() {
+	ball.directionY = DOWN;
+	ball.SpeedY = BOUND_SPEED;
+	ball.BoostY = BOUND_BOOST;
 }
 
 BOOL LeftHitten()

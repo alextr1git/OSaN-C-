@@ -1,10 +1,10 @@
 ﻿  TheBall.cpp
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(113,19): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(114,19): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(91,14): warning C4101: 'ps': unreferenced local variable
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(181,28): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(195,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(195,39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(207,10): warning C4101: 'hBmp': unreferenced local variable
-C:\Users\User\Desktop\TheBall-master\TheBall\TheBall\TheBall.cpp(240): warning C4715: 'DrawBitmap': not all control paths return a value
-  TheBall.vcxproj -> C:\Users\User\Desktop\TheBall-master\TheBall\x64\Debug\TheBall.exe
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(113,19): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(114,19): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(91,14): warning C4101: 'ps': unreferenced local variable
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(191,28): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(205,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(205,39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(217,10): warning C4101: 'hBmp': unreferenced local variable
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\TheBall\TheBall.cpp(250): warning C4715: 'DrawBitmap': not all control paths return a value
+  TheBall.vcxproj -> E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\LabWork1\x64\Debug\TheBall.exe
