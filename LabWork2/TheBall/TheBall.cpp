@@ -91,6 +91,12 @@ int CALLBACK WinMain(
 
 	return (int)msg.wParam; // Реальный скан-код клавиши траслируется в виртуальный код виндовс.
 }
+VOID sendUMessage(
+	_In_opt_ LPVOID lpArgToCompletionRoutine,
+	_In_     DWORD dwTimerLowValue,
+	_In_     DWORD dwTimerHighValue) {
+	SendMessage((HWND)lpArgToCompletionRoutine, WM_USER, 0, 0);
+}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -112,7 +118,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		DrawBall(hWnd);
 		
-		if (!SetWaitableTimer(hTimer, &liDueTime, 1, sendUMessage(hWnd), hWnd, 0))
+		if (!SetWaitableTimer(hTimer, &liDueTime, 1, sendUMessage, hWnd, 0))
 		{
 			MessageBox(NULL,
 				_T("SetWaitableTimer failed!"),
@@ -120,18 +126,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				NULL);
 			return 2;
 		}
-
+		
 		if (WaitForSingleObject(hTimer, INFINITE) != WAIT_OBJECT_0)
 			MessageBox(NULL,
 				_T("WaitForSingleObject failed"),
 				_T("Windows Desktop Guided Tour"),
 				NULL);
+		SleepEx(0, TRUE);
 		break;
 	/* ORDTIMER case WM_TIMER:
-	 MessageBox(NULL,
-			_T("Works"),
-			_T("Windows Desktop Guided Tour"),
-			NULL);
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
@@ -251,10 +254,7 @@ void DrawBall(HWND hWnd)
 	EndPaint(hWnd, &ps);
 }
 
-PTIMERAPCROUTINE sendUMessage(HWND hWnd) {
-	SendMessage(hWnd, WM_USER,0,0);
-	return 0;
-}
+
 	
 
 BOOL DrawBitmap(HDC hDC, int x, int y, HBITMAP hBitmap)
