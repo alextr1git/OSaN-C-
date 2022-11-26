@@ -106,9 +106,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_CREATE:
 		LoadResources();
 		InitializeBall(hWnd);
-	// ORDTIMER	SetTimer(hWnd, timer, 1, NULL);
-		hTimer = CreateWaitableTimer(NULL, NULL, NULL);
-		liDueTime.QuadPart = -1LL;
+		SetTimer(hWnd, timer, 1, NULL);
+	//	hTimer = CreateWaitableTimer(NULL, NULL, NULL);
+	//	liDueTime.QuadPart = -1LL;
 		break;
 	case WM_DESTROY:
 		KillTimer(hWnd, 1);
@@ -117,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	case WM_PAINT:
 		DrawBall(hWnd);
-		
+	/*	
 		if (!SetWaitableTimer(hTimer, &liDueTime, 1, sendUMessage, hWnd, 0))
 		{
 			MessageBox(NULL,
@@ -133,12 +133,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				_T("Windows Desktop Guided Tour"),
 				NULL);
 		SleepEx(0, TRUE);
-		break;
-	/* ORDTIMER case WM_TIMER:
+		break;*/
+	 case WM_TIMER:
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
-		break;*/
+		break;
 	case WM_LBUTTONDOWN: // mouse click
 	
 		GetCursorPos(&pos);
@@ -201,14 +201,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		break;
-	case WM_USER:
+	/*case WM_USER:
 
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
 
 		
-		break;
+		break;*/
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);/*
 		Отвечает за работу инструментов окна (закрыть, скрыть, прокрутить...). 
