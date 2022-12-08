@@ -40,6 +40,7 @@ void SetUpLeftHit();
 void SetUpRightHit();
 void SetUpUpHit();
 void SetUpDownHit();
+void Gravity();
 
 BOOL LeftHitten();
 BOOL RightHitten();

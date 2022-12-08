@@ -108,6 +108,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
+		Gravity();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
 		break;
 	case WM_LBUTTONDOWN: // mouse click
@@ -187,6 +188,9 @@ void LoadResources()
 	hBmpBall = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 }
 
+void Gravity() {
+	ball.Y = ball.Y + 1;
+}
 void InitializeBall(HWND hWnd)
 {
 	BITMAP bmp;
