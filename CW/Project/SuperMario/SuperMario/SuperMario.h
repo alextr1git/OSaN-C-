@@ -61,6 +61,7 @@ constexpr auto ALLOWED_FAULT = 1.0;
 constexpr auto GRAVITATION = 5;
 constexpr auto BLOCKACCURACY = 50;
 constexpr auto AMOUNTOFBLOCKS = 7;
+constexpr auto BASICGRAVITY = WND_HEIGHT - 65;
 
 Block blocks[AMOUNTOFBLOCKS];
 

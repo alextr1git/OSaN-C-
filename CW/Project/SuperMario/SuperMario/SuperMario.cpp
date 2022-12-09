@@ -2,9 +2,13 @@
 #include "resource.h"
 
 int X, Y = 0;
+int gravityX = 0;
 int endflag = 0;
 int waitflag = 0;
 int wait = 1001;
+int gravityLevel = BASICGRAVITY;
+int spaceCheck = 0;
+int spacePos = 0;
 POINT pos; RECT rc;
 
 int CALLBACK WinMain(
@@ -101,6 +105,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		InitializeClouds(hWnd);
 		InitializeGoomba(hWnd);
 		SetTimer(hWnd, timer, 1, NULL);
+		spacePos = mario.Y;
 		break;
 	case WM_DESTROY:
 		KillTimer(hWnd, 1);
@@ -149,7 +154,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			hBmpMario = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\rightMario.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 			break;
 		case VK_SPACE:
-			SetUpUpHit();			
+			if (spaceCheck < 2) {
+				spaceCheck++;
+				SetUpUpHit();
+			}
 			break;
 		}
 		break;
@@ -184,7 +192,7 @@ void LoadResources()
 }
 
 void Gravity() {
-	if (mario.Y < WND_HEIGHT - 65)
+	if (mario.Y < gravityLevel)
 		mario.Y = mario.Y + GRAVITATION;
 }
 
@@ -461,6 +469,18 @@ void RecalculateGoombaPosition()
 
 void RecalculateMarioPosition()
 {
+	if (mario.Y  >= spacePos)
+		spaceCheck = 0;
+
+	if (gravityLevel != BASICGRAVITY) {
+		int sumGravity = gravityX - mario.X;
+		int ASG = abs(sumGravity);
+		if (ASG > 47) {
+			gravityLevel = BASICGRAVITY;
+			spacePos = 500;
+		}
+		
+	}
 	switch (mario.directionX) {
 	case LEFT:	
 		mario.X -= mario.SpeedX - mario.BoostX / 2;
@@ -591,6 +611,9 @@ void Collision(Mario& mario, Block& block)
 	case (NONE_Y):
 		if ((VAverticalDistance <= BLOCKACCURACY) && (VAhorizontalDistance <= BLOCKACCURACY)) {
 			mario.Y -= 5;
+			gravityLevel = mario.Y;
+			gravityX = block.X;
+			spacePos = mario.Y;
 	
 		}
 		
