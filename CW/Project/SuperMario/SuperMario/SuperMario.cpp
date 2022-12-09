@@ -2,6 +2,9 @@
 #include "resource.h"
 
 int X, Y = 0;
+int endflag = 0;
+int waitflag = 0;
+int wait = 1001;
 POINT pos; RECT rc;
 
 int CALLBACK WinMain(
@@ -109,11 +112,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
        
 		break;
 	case WM_TIMER:
+		if (waitflag == 1)
+			wait++;
 		RecalculateMarioSpeed();
 		RecalculateMarioPosition();
-		RecalculateGoombaSpeed();
 		RecalculateGoombaPosition();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
+		switch (endflag) 
+		{
+		case 1:
+			KillTimer(hWnd, 1);
+			MessageBox(NULL,
+				_T("Game over!"),
+				_T("Congrats!"),
+				NULL);
+			break;
+		case 2:
+			KillTimer(hWnd, 1);
+			MessageBox(NULL,
+				_T("You have passed the level!"),
+				_T("Congrats!"),
+				NULL);
+			break;
+		default:
+			break;
+		}
 		break;
 	case WM_KEYDOWN:
 		switch (wParam) {
@@ -167,7 +190,7 @@ void Gravity() {
 
 void GoombaGravity() {
 	if (goomba.Y < WND_HEIGHT - 85)
-		goomba.Y = goomba.Y + GRAVITATION;
+		goomba.Y = goomba.Y + 1;
 }
 void InitializeMario(HWND hWnd)
 {
@@ -188,7 +211,7 @@ void InitializeGoomba(HWND hWnd)
 {
 	BITMAP bmp;
 	GetObject(hGoomba, sizeof(BITMAP), (LPSTR)&bmp);
-	goomba.X = 150;
+	goomba.X = 1400;
 	goomba.Y = 500;
 	goomba.Radius = bmp.bmWidth / 2;//24
 	goomba.SpeedX = 0.0;
@@ -241,11 +264,11 @@ void InitializeBlocksArray(HBITMAP hBmpblock, int i) {
 	BITMAP bmp;
 	switch (i) {
 	case 0:
-		blocks[i].X = 125;
+		blocks[i].X = 225;
 		blocks[i].Y = 450;
 		break;
 	case 1:
-		blocks[i].X = 325;
+		blocks[i].X = 425;
 		blocks[i].Y = 300;
 		break;
 	case 2:
@@ -402,42 +425,38 @@ void RecalculateGoombaSpeed()
 }
 void RecalculateGoombaPosition()
 {
-	switch (goomba.directionX) {
-	case LEFT:
-		goomba.X -= goomba.SpeedX - goomba.BoostX / 2;
-		if (LeftHitten()) { mario.directionX = RIGHT; }
-		break;
+	if (wait > 100)
+	{
+		hGoomba = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\goomba.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
-	case RIGHT:
-		goomba.X += goomba.SpeedX - goomba.BoostX / 2;
-		if (RightHitten()) {
-			goomba.directionX = LEFT;
+		waitflag == 0;
+			if (goomba.X > mario.X) {
+				goomba.X -= 3;
+			}
+			else if (goomba.X < mario.X)
+			{
+				goomba.X += 3;
+			}
+			int SumX = goomba.X - mario.X;
+			int ASumX = abs(SumX);
+			int SumY = goomba.Y - mario.Y;
+			int ASumY = abs(SumY);
+			if (ASumX <= 48 && ASumY <= 48 && mario.Y >= goomba.Y) {
+				endflag = 1;
+			}
+			if (ASumX <= 48 && ASumY <= 48 && mario.Y < goomba.Y) {
+				waitflag = 1;
+				wait = 0;
+				hGoomba = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\goombaDead.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+				goomba.X = 1350;
+				goomba.Y = 500;
+			}
+
+		for (int i = 0; i < AMOUNTOFBLOCKS; i++) {
+			Collision(goomba, blocks[i]);
 		}
-		break;
-	case NONE_X:
-		break;
+		GoombaGravity();
 	}
-
-	switch (goomba.directionY) {
-	case UP:
-		goomba.Y -= goomba.SpeedY - goomba.BoostY / 2;
-		if (TopHitten()) {
-			goomba.directionY = NONE_Y;
-
-		}
-		break;
-	case NONE_Y:
-		if (goomba.Y < WND_HEIGHT - 65) {
-			GoombaGravity();
-		}
-
-		break;
-	}
-	for (int i = 0; i < AMOUNTOFBLOCKS; i++) {
-		Collision(goomba, blocks[i]);
-	}
-
-
 }
 
 void RecalculateMarioPosition()
@@ -453,10 +472,8 @@ void RecalculateMarioPosition()
 		mario.X += mario.SpeedX - mario.BoostX / 2;
 		if (RightHitten()) {
 			mario.directionX = LEFT;
-			MessageBox(NULL,
-				_T("You have passed the level!"),
-				_T("Congrats!"),
-				NULL);
+			endflag = 2;
+
 		}
 		break;
 	case NONE_X:
@@ -504,7 +521,7 @@ void SetUpRightHit()
 void SetUpUpHit()
 {
 	mario.directionY = UP;
-	mario.SpeedY = START_SPEED;
+	mario.SpeedY = 10;
 	mario.BoostY = BOOST;
 }
 
