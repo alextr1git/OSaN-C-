@@ -1,11 +1,18 @@
 ﻿  SuperMario.cpp
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(475,14): warning C4101: 'ps': unreferenced local variable
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(537,28): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(551,61): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(551,39): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(563,10): warning C4101: 'hBmp': unreferenced local variable
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(655,21): warning C4305: '=': truncation from 'const double' to 'float'
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(662,21): warning C4305: '=': truncation from 'const double' to 'float'
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(669,21): warning C4305: '=': truncation from 'const double' to 'float'
-E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(597): warning C4715: 'DrawBitmap': not all control paths return a value
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(92,14): warning C4101: 'ps': unreferenced local variable
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(157,29): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(172,33): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(186,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(186,40): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(187,71): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(187,45): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(199,10): warning C4101: 'hBmp': unreferenced local variable
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(296,22): warning C4305: '=': truncation from 'const double' to 'float'
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(303,22): warning C4305: '=': truncation from 'const double' to 'float'
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(310,22): warning C4305: '=': truncation from 'const double' to 'float'
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(341,26): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(342,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(347,26): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(348,24): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\SuperMario\SuperMario.cpp(233): warning C4715: 'DrawBitmap': not all control paths return a value
   SuperMario.vcxproj -> E:\IT&BSUIR\БГУИР\3 КУРС\5 СЕМ\ОСИСП\OSaN-C-\CW\Project\SuperMario\x64\Debug\SuperMario.exe

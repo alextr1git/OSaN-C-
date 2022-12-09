@@ -1,387 +1,4 @@
-﻿/*// SuperMario.cpp : Defines the entry point for the application.
-//
-
-#include "framework.h"
-#include "SuperMario.h"
-
-#define MAX_LOADSTRING 100
-
-// Global Variables:
-HINSTANCE hInst;                                // current instance
-WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
-WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-
-// Forward declarations of functions included in this code module:
-ATOM                MyRegisterClass(HINSTANCE hInstance);
-BOOL                InitInstance(HINSTANCE, int);
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
-{
-    UNREFERENCED_PARAMETER(hPrevInstance);
-    UNREFERENCED_PARAMETER(lpCmdLine);
-
-    // TODO: Place code here.
-
-    // Initialize global strings
-    LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_SUPERMARIO, szWindowClass, MAX_LOADSTRING);
-    MyRegisterClass(hInstance);
-
-    // Perform application initialization:
-    if (!InitInstance (hInstance, nCmdShow))
-    {
-        return FALSE;
-    }
-
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SUPERMARIO));
-
-    MSG msg;
-
-    // Main message loop:
-    while (GetMessage(&msg, nullptr, 0, 0))
-    {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-        {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-    }
-
-    return (int) msg.wParam;
-}
-
-
-
-//
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
-//
-ATOM MyRegisterClass(HINSTANCE hInstance)
-{
-    WNDCLASSEXW wcex;
-
-    wcex.cbSize = sizeof(WNDCLASSEX);
-
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SUPERMARIO));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_SUPERMARIO);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
-}
-
-//
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-//
-BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
-{
-   hInst = hInstance; // Store instance handle in our global variable
-
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-
-   if (!hWnd)
-   {
-      return FALSE;
-   }
-
-   ShowWindow(hWnd, nCmdShow);
-   UpdateWindow(hWnd);
-
-   return TRUE;
-}
-
-//
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
-//
-//
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-    case WM_CREATE:
-        LoadResources();
-        InitializeBall(hWnd);
-        SetTimer(hWnd, timer, 1, NULL);
-        break;
-    case WM_COMMAND:
-        {
-            int wmId = LOWORD(wParam);
-            // Parse the menu selections:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            case WM_TIMER:
-                RecalculateBallSpeed();
-                RecalculateBallPosition();
-                Gravity();
-                InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
-                break;
-            case WM_KEYDOWN:
-                switch (wParam) {
-                case VK_LEFT:
-                    SetUpLeftHit();
-                    break;
-                case VK_RIGHT:
-                    SetUpRightHit();
-                    break;
-                case VK_UP:
-                    SetUpUpHit();
-                    break;
-                case VK_DOWN:
-                    SetUpDownHit();
-                    break;
-                }
-                break;
-
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
-        }
-        break;
-    case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: Add any drawing code that uses hdc here...
-            BOOL result = DrawBitmap(hdc, ball.X - ball.Radius, ball.Y - ball.Radius, hBmpBall);
-            if (result == FALSE) {
-                MessageBox(NULL,
-                    _T("Call to DrawBitmap failed!"),
-                    _T("Windows Desktop Guided Tour"),
-                    NULL);
-            }
-            EndPaint(hWnd, &ps);
-        }
-        break;
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        break;
-    default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
-    }
-    return 0;
-}
-
-// Message handler for about box.
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
-
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
-}
-
-
-BOOL DrawBitmap(HDC hDC, int x, int y, HBITMAP hBitmap)
-{
-    HBITMAP hBmp, hBmpOld;
-    HDC hMemDC;
-    BITMAP bmp;
-    POINT ptSize, ptOrg;
-
-    hMemDC = CreateCompatibleDC(hDC); // creating memory context, that is compatible with hDC
-    //Чтобы приложения могли размещать выходные данные в памяти, а не отправлять их на фактическое устройство
-    if (hMemDC == NULL) {
-        return FALSE;
-    }
-
-
-    hBmpOld = (HBITMAP)SelectObject(hMemDC, hBitmap); // select image into the context	
-    // this function returns ID of the 
-    //BMP that was loaded into the memory context earlier
-    if (!hBmpOld) {
-        return FALSE;
-    }
-
-    SetMapMode(hMemDC, GetMapMode(hDC)); // synchronizing of the memory context and showing context
-    GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&bmp);
-
-    ptSize.x = bmp.bmWidth;
-    ptSize.y = bmp.bmHeight;
-    DPtoLP(hDC, &ptSize, 1); // convert units into logical units
-
-    ptOrg.x = 0;
-    ptOrg.y = 0;
-    DPtoLP(hDC, &ptSize, 1);
-
-   // BitBlt(hDC, x, y, ptSize.x, ptSize.y, hMemDC, ptOrg.x, ptOrg.y, BLACKNESS);
-    TransparentBlt(hDC, x, y, ptSize.x, ptSize.y, hMemDC, ptOrg.x, ptOrg.y, ptSize.x, ptSize.y, RGB(255, 255, 255));
-
-    SelectObject(hMemDC, hBmpOld); // restore memory context
-    DeleteObject(hMemDC);
-}
-
-void LoadResources()
-{
-    //hBmpBall = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-    hBmpBall = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\test.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-    int Error = GetLastError();
-
-}
-
-void InitializeBall(HWND hWnd)
-{
-    BITMAP bmp;
-    GetObject(hBmpBall, sizeof(BITMAP), (LPSTR)&bmp);
-    ball.X = WND_WIDTH / 2;
-    ball.Y = WND_HEIGHT / 2;
-    ball.Radius = bmp.bmWidth / 2;
-    ball.SpeedX = 0.0;
-    ball.SpeedY = 0.0;
-    ball.BoostX = 0.0;
-    ball.BoostY = 0.0;
-    ball.directionX = NONE_X;
-    ball.directionY = NONE_Y;
-}
-
-void Gravity() {
-    ball.Y = ball.Y + 1;
-}
-
-void RecalculateBallPosition()
-{
-    switch (ball.directionX) {
-    case LEFT:
-        ball.X -= ball.SpeedX - ball.BoostX / 2;
-        if (LeftHitten()) { ball.directionX = RIGHT; }
-        break;
-    case RIGHT:
-        ball.X += ball.SpeedX - ball.BoostX / 2;
-        if (RightHitten()) { ball.directionX = LEFT; }
-        break;
-    case NONE_X:
-        break;
-    }
-
-    switch (ball.directionY) {
-    case UP:
-        ball.Y -= ball.SpeedY - ball.BoostY / 2;
-        if (TopHitten()) { ball.directionY = DOWN; }
-        break;
-    case DOWN:
-        ball.Y += ball.SpeedY - ball.BoostY / 2;
-        if (BottomHitten()) { ball.directionY = UP; }
-        break;
-    case NONE_Y:
-        break;
-    }
-}
-void RecalculateBallSpeed()
-{
-    if (ball.directionX != NONE_X) {
-        ball.SpeedX = ball.SpeedX - ball.BoostX;
-        if (ball.SpeedX > (-1) * ALLOWED_FAULT && ball.SpeedX < ALLOWED_FAULT) {
-            ball.SpeedX = 0.0;
-            ball.BoostX = 0.0;
-            ball.directionX = NONE_X;
-        }
-    }
-
-    if (ball.directionY != NONE_Y) {
-        ball.SpeedY = ball.SpeedY - ball.BoostY;
-        if (ball.SpeedY > (-1) * ALLOWED_FAULT && ball.SpeedY < ALLOWED_FAULT) {
-            ball.SpeedY = 0.0;
-            ball.BoostY = 0.0;
-            ball.directionY = NONE_Y;
-        }
-    }
-}
-void SetUpLeftHit()
-{
-    ball.directionX = LEFT;
-    ball.SpeedX = START_SPEED;
-    ball.BoostX = BOOST;
-}
-
-void SetUpRightHit()
-{
-    ball.directionX = RIGHT;
-    ball.SpeedX = START_SPEED;
-    ball.BoostX = BOOST;
-}
-
-void SetUpUpHit()
-{
-    ball.directionY = UP;
-    ball.SpeedY = START_SPEED;
-    ball.BoostY = BOOST;
-}
-
-void SetUpDownHit()
-{
-    ball.directionY = DOWN;
-    ball.SpeedY = START_SPEED;
-    ball.BoostY = BOOST;
-}
-
-BOOL LeftHitten()
-{
-    if (ball.X - ball.Radius <= 0) { return TRUE; }
-    else { return FALSE; }
-}
-
-BOOL RightHitten()
-{
-    if (ball.X + ball.Radius >= WND_WIDTH) { return TRUE; }
-    else { return FALSE; }
-}
-
-BOOL TopHitten()
-{
-    if (ball.Y - ball.Radius <= 0) { return TRUE; }
-    else { return FALSE; }
-}
-
-BOOL BottomHitten()
-{
-    if (ball.Y + ball.Radius >= WND_HEIGHT - 20) { return TRUE; }
-    else { return FALSE; }
-}*/
-
-#include "SuperMario.h"
+﻿#include "SuperMario.h"
 #include "resource.h"
 
 bool mflag = false;
@@ -477,7 +94,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	switch (message) {
 	case WM_CREATE:
 		LoadResources();
-		InitializeBall(hWnd);
+		InitializeMario(hWnd);
+        InitializeBlock(hWnd);
 		SetTimer(hWnd, timer, 1, NULL);
 		break;
 	case WM_DESTROY:
@@ -486,7 +104,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		//и тогда GetMessage вернет FALSE
 		break;
 	case WM_PAINT:
-		DrawBall(hWnd);
+		DrawScene(hWnd);
+       
 		break;
 	case WM_TIMER:
 		RecalculateBallSpeed();
@@ -520,35 +139,52 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void LoadResources()
 {
 	//hBmpBall = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
-	hBmpBall = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\test.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hBmpMario = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\test.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+    hBmpblock1 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	int Error = GetLastError();
 
 }
 
 void Gravity() {
-	ball.Y = ball.Y + GRAVITATION;
+	mario.Y = mario.Y + GRAVITATION;
 }
-void InitializeBall(HWND hWnd)
+void InitializeMario(HWND hWnd)
 {
 	BITMAP bmp;
-	GetObject(hBmpBall, sizeof(BITMAP), (LPSTR)&bmp);
-	ball.X = WND_WIDTH / 2;
-	ball.Y = WND_HEIGHT / 2;
-	ball.Radius = bmp.bmWidth / 2;
-	ball.SpeedX = 0.0;
-	ball.SpeedY = 0.0;
-	ball.BoostX = 0.0;
-	ball.BoostY = 0.0;
-	ball.directionX = NONE_X;
-	ball.directionY = NONE_Y;
+	GetObject(hBmpMario, sizeof(BITMAP), (LPSTR)&bmp);
+	mario.X = WND_WIDTH / 2;
+	mario.Y = WND_HEIGHT / 2;
+	mario.Radius = bmp.bmWidth / 2;//24
+	mario.SpeedX = 0.0;
+	mario.SpeedY = 0.0;
+	mario.BoostX = 0.0;
+	mario.BoostY = 0.0;
+	mario.directionX = NONE_X;
+	mario.directionY = NONE_Y;
 }
 
-void DrawBall(HWND hWnd)
+void InitializeBlock(HWND hWnd)
+{
+    BITMAP bmp;
+    GetObject(hBmpblock1, sizeof(BITMAP), (LPSTR)&bmp);
+    block1.X = WND_WIDTH / 2 + 350;
+    block1.Y = WND_HEIGHT - 65;
+    block1.Radius = bmp.bmWidth / 2;
+    block1.SpeedX = 0.0;
+    block1.SpeedY = 0.0;
+    block1.BoostX = 0.0;
+    block1.BoostY = 0.0;
+    block1.directionX = NONE_X;
+    block1.directionY = NONE_Y;
+}
+
+void DrawScene(HWND hWnd)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
 	hdc = BeginPaint(hWnd, &ps);
-	BOOL result = DrawBitmap(hdc, ball.X - ball.Radius, ball.Y - ball.Radius, hBmpBall);
+	BOOL result = DrawBitmap(hdc, mario.X - mario.Radius, mario.Y - mario.Radius, hBmpMario);
+    BOOL result2 = DrawBitmap(hdc, block1.X - block1.Radius, block1.Y - block1.Radius, hBmpblock1);
 	if (result == FALSE) {
 		MessageBox(NULL,
 			_T("Call to DrawBitmap failed!"),
@@ -598,98 +234,150 @@ BOOL DrawBitmap(HDC hDC, int x, int y, HBITMAP hBitmap)
 
 void RecalculateBallSpeed()
 {
-	if (ball.directionX != NONE_X) {
-		ball.SpeedX = ball.SpeedX - ball.BoostX;
-		if (ball.SpeedX > (-1) * ALLOWED_FAULT && ball.SpeedX < ALLOWED_FAULT) {
-			ball.SpeedX = 0.0;
-			ball.BoostX = 0.0;
-			ball.directionX = NONE_X;
+	if (mario.directionX != NONE_X) {
+		mario.SpeedX = mario.SpeedX - mario.BoostX;
+		if (mario.SpeedX > (-1) * ALLOWED_FAULT && mario.SpeedX < ALLOWED_FAULT) {
+			mario.SpeedX = 0.0;
+			mario.BoostX = 0.0;
+			mario.directionX = NONE_X;
 		}
 	}
 
-	if (ball.directionY != NONE_Y) {
-		ball.SpeedY = ball.SpeedY - ball.BoostY;
-		if (ball.SpeedY > (-1) * ALLOWED_FAULT && ball.SpeedY < ALLOWED_FAULT) {
-			ball.SpeedY = 0.0;
-			ball.BoostY = 0.0;
-			ball.directionY = NONE_Y;
+	if (mario.directionY != NONE_Y) {
+		mario.SpeedY = mario.SpeedY - mario.BoostY;
+		if (mario.SpeedY > (-1) * ALLOWED_FAULT && mario.SpeedY < ALLOWED_FAULT) {
+			mario.SpeedY = 0.0;
+			mario.BoostY = 0.0;
+			mario.directionY = NONE_Y;
 		}
 	}
 }
 
 void RecalculateBallPosition()
 {
-	switch (ball.directionX) {
+   
+	switch (mario.directionX) {
 	case LEFT:
-		ball.X -= ball.SpeedX - ball.BoostX / 2;
-		if (LeftHitten()) { ball.directionX = RIGHT; }
+		mario.X -= mario.SpeedX - mario.BoostX / 2;
+		if (LeftHitten()) { mario.directionX = RIGHT; }
 		break;
+        
 	case RIGHT:
-		ball.X += ball.SpeedX - ball.BoostX / 2;
-		if (RightHitten()) { ball.directionX = LEFT; }
+		mario.X += mario.SpeedX - mario.BoostX / 2;
+		if (RightHitten()) { mario.directionX = LEFT; }
 		break;
 	case NONE_X:
 		break;
 	}
 
-	switch (ball.directionY) {
+	switch (mario.directionY) {
 	case UP:
-		ball.Y -= ball.SpeedY - ball.BoostY / 2;
+		mario.Y -= mario.SpeedY - mario.BoostY / 2;
 		if (TopHitten()) { 
-            ball.directionY = NONE_Y;
+            mario.directionY = NONE_Y;
             /*ball.directionY = DOWN; */}
 		break;
 	case NONE_Y:
-        if (ball.Y < WND_HEIGHT - 65) {
+        if (mario.Y < WND_HEIGHT - 65) {
             Gravity();
         }
 		break;
 	}
+    Collision(mario, block1);
+    
+  
    
 }
 
 void SetUpLeftHit()
 {
-	ball.directionX = LEFT;
-	ball.SpeedX = START_SPEED;
-	ball.BoostX = BOOST;
+	mario.directionX = LEFT;
+	mario.SpeedX = START_SPEED;
+	mario.BoostX = BOOST;
 }
 
 void SetUpRightHit()
 {
-	ball.directionX = RIGHT;
-	ball.SpeedX = START_SPEED;
-	ball.BoostX = BOOST;
+	mario.directionX = RIGHT;
+	mario.SpeedX = START_SPEED;
+	mario.BoostX = BOOST;
 }
 
 void SetUpUpHit()
 {
-	ball.directionY = UP;
-	ball.SpeedY = START_SPEED;
-	ball.BoostY = BOOST;
+	mario.directionY = UP;
+	mario.SpeedY = START_SPEED;
+	mario.BoostY = BOOST;
 }
 
 BOOL LeftHitten()
 {
-	if (ball.X - ball.Radius <= 0) { return TRUE; }
+	if (mario.X - mario.Radius <= 0) { return TRUE; }
 	else { return FALSE; }
 }
 
 BOOL RightHitten()
 {
-	if (ball.X + ball.Radius >= WND_WIDTH) { return TRUE; }
+	if (mario.X + mario.Radius >= WND_WIDTH) { return TRUE; }
 	else { return FALSE; }
 }
 
 BOOL TopHitten()
 {
-	if (ball.Y - ball.Radius <= 0) { return TRUE; }
+	if (mario.Y - mario.Radius <= 0) { return TRUE; }
 	else { return FALSE; }
 }
 
 BOOL BottomHitten()
 {
-	if (ball.Y + ball.Radius >= WND_HEIGHT - 20) { return TRUE; }
+	if (mario.Y + mario.Radius >= WND_HEIGHT - 20) { return TRUE; }
 	else { return FALSE; }
 
+}
+
+void Collision(Mario& mario, Block& block)
+{
+	//HORIZONTAL
+	int HhorizontalDistance = mario.X - block.X;
+	int HverticalDistance = (mario.Y - mario.Radius) - (block.Y + block.Radius);
+	int HAverticalDistance = abs(HverticalDistance);
+	int HAhorizontalDistance = abs(HhorizontalDistance);
+
+	//VERTICAL
+	int VhorizontalDistance = (mario.X - mario.Radius) - (block.X - block.Radius);
+	int VverticalDistance =  mario.Y - block.Y;
+	int VAverticalDistance = abs(VverticalDistance);
+	int VAhorizontalDistance = abs(VhorizontalDistance);
+
+	switch (mario.directionX) {
+	case (LEFT):
+		if ((HAhorizontalDistance <= BLOCKACCURACY) && (HAverticalDistance <= BLOCKACCURACY)) {
+			mario.directionX = NONE_X;
+			mario.X += 10;
+		}
+		break;
+	case (RIGHT):
+		if ((HAhorizontalDistance <= BLOCKACCURACY) && (HAverticalDistance <= BLOCKACCURACY)) {
+			mario.directionX = NONE_X;
+			mario.X -= 10;
+		}
+	  default:
+		  break;
+	  }
+
+	switch (mario.directionY) {
+	case (UP):
+		if ((VAverticalDistance <= BLOCKACCURACY) && (VAhorizontalDistance <= BLOCKACCURACY)) {
+			mario.directionX = NONE_X;
+			mario.X += 10;
+		}
+		break;
+	case (NONE_Y):
+		if ((VAverticalDistance <= BLOCKACCURACY) && (VAhorizontalDistance <= BLOCKACCURACY)) {
+			mario.Y -= 10;
+		}
+		break;
+	default:
+		break;
+	}
 }

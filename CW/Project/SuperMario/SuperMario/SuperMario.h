@@ -1,93 +1,51 @@
-﻿/*#pragma once
-#pragma comment( lib, "Msimg32.lib" )
-
-#include "resource.h"
-#include "wingdi.h"
-#include <windows.h>
-#include <stdlib.h>
-#include <tchar.h>
-
-
-enum DirectionX { LEFT, RIGHT, NONE_X };
-enum DirectionY { UP, DOWN, NONE_Y };
-
-typedef struct ball {
-	float X, Y, Radius;
-	float SpeedX, SpeedY;
-	float BoostX, BoostY;
-	DirectionX directionX;
-	DirectionY directionY;
-} Ball;
-
-Ball ball;
-HBITMAP hBmpBall;
-
-int timer = 1;
-
-constexpr auto START_SPEED = 20.0;
-constexpr auto BOOST = 0.25;
-constexpr auto ALLOWED_FAULT = 1.0;
-
-constexpr auto WND_WIDTH = 1000.0;
-constexpr auto WND_HEIGHT = 600.0;
-
-void LoadResources();
-void InitializeBall(HWND);
-
-
-void DrawBall(HWND);
-BOOL DrawBitmap(HDC hDc, int x, int y, HBITMAP hBitmap);
-
-BOOL LeftHitten();
-BOOL RightHitten();
-BOOL TopHitten();
-BOOL BottomHitten();
-
-void Gravity();
-void SetUpLeftHit();
-void SetUpRightHit();
-void SetUpUpHit();
-void SetUpDownHit();
-
-void RecalculateBallSpeed();
-void RecalculateBallPosition();
-*/
-#pragma once
+﻿#pragma once
 #pragma comment( lib, "Msimg32.lib" )
 
 #include <windows.h>
 #include <stdlib.h>
 #include <tchar.h>
+#include <math.h>
 
 
 // User types
 enum DirectionX { LEFT, RIGHT, NONE_X };
 enum DirectionY { UP, NONE_Y };
 
-typedef struct ball {
+typedef struct mario {
 	float X, Y, Radius;
 	float SpeedX, SpeedY;
 	float BoostX, BoostY;
 	DirectionX directionX;
 	DirectionY directionY;
-} Ball;
+} Mario;
+
+typedef struct block {
+	float X, Y, Radius;
+	float SpeedX, SpeedY;
+	float BoostX, BoostY;
+	DirectionX directionX;
+	DirectionY directionY;
+} Block;
 
 
 // Global variables
-static TCHAR szWindowClass[] = _T("TheBall");
-static TCHAR szTitle[] = _T("The Ball");
+static TCHAR szWindowClass[] = _T("Super Mario");
+static TCHAR szTitle[] = _T("Super Mario");
 constexpr auto WND_WIDTH = 1550.0;
 constexpr auto WND_HEIGHT = 600.0;
 HINSTANCE hInst;
 
-Ball ball;
+Mario mario;
+Block block1;
 int timer = 1;
-HBITMAP hBmpBall;
+HBITMAP hBmpMario;
+HBITMAP hBmpblock1;
 
 constexpr auto START_SPEED = 7.0;
 constexpr auto BOOST = 0.3;
 constexpr auto ALLOWED_FAULT = 1.0;
 constexpr auto GRAVITATION = 3;
+constexpr auto BLOCKACCURACY = 50;
 
 // Forward declarations of functions included in this code module:
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -101,11 +59,14 @@ BOOL LeftHitten();
 BOOL RightHitten();
 BOOL TopHitten();
 BOOL BottomHitten();
+void Collision(Mario&, Block&);
 
 void LoadResources();
-void InitializeBall(HWND);
+void InitializeMario(HWND);
+void InitializeBlock(HWND);
 
-void DrawBall(HWND);
+void DrawScene(HWND);
+void DrawBlock(HWND);
 BOOL DrawBitmap(HDC hDc, int x, int y, HBITMAP hBitmap);
 
 void RecalculateBallSpeed();
