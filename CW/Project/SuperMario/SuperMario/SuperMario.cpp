@@ -141,6 +141,13 @@ void LoadResources()
 	//hBmpBall = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
 	hBmpMario = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\test.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
     hBmpblock1 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
+	hBmpblocks1 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hBmpblocks2 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hBmpblocks3 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hBmpblocks4 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hBmpblocks5 = (HBITMAP)LoadImage(hInst, L"C:\\Users\\User\\Desktop\\res\\block.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
 	int Error = GetLastError();
 
 }
@@ -152,8 +159,8 @@ void InitializeMario(HWND hWnd)
 {
 	BITMAP bmp;
 	GetObject(hBmpMario, sizeof(BITMAP), (LPSTR)&bmp);
-	mario.X = WND_WIDTH / 2;
-	mario.Y = WND_HEIGHT / 2;
+	mario.X = 50;
+	mario.Y = 500;
 	mario.Radius = bmp.bmWidth / 2;//24
 	mario.SpeedX = 0.0;
 	mario.SpeedY = 0.0;
@@ -176,6 +183,35 @@ void InitializeBlock(HWND hWnd)
     block1.BoostY = 0.0;
     block1.directionX = NONE_X;
     block1.directionY = NONE_Y;
+
+	//BITMAP bmp;
+
+	GetObject(hBmpblocks1, sizeof(BITMAP), (LPSTR)&bmp);
+	GetObject(hBmpblocks2, sizeof(BITMAP), (LPSTR)&bmp);
+	GetObject(hBmpblocks3, sizeof(BITMAP), (LPSTR)&bmp);
+	GetObject(hBmpblocks4, sizeof(BITMAP), (LPSTR)&bmp);
+	GetObject(hBmpblocks5, sizeof(BITMAP), (LPSTR)&bmp);
+
+	InitializeBlocksArray(hBmpblocks1, 0);
+	InitializeBlocksArray(hBmpblocks2, 1);
+	InitializeBlocksArray(hBmpblocks3, 2);
+	InitializeBlocksArray(hBmpblocks4, 3);
+	InitializeBlocksArray(hBmpblocks5, 4);
+
+}
+void InitializeBlocksArray(HBITMAP hBmpblock, int i) {
+	int randomNumberY = rand() % 10 + 1;
+	int randomNumberX = rand() % 10 + 1;
+	BITMAP bmp;
+	blocks[i].X = 200 + randomNumberX * 110;
+	blocks[i].Y = 300 + randomNumberY * 20;
+	blocks[i].Radius = 24;
+	blocks[i].SpeedX = 0.0;
+	blocks[i].SpeedY = 0.0;
+	blocks[i].BoostX = 0.0;
+	blocks[i].BoostY = 0.0;
+	blocks[i].directionX = NONE_X;
+	blocks[i].directionY = NONE_Y;
 }
 
 void DrawScene(HWND hWnd)
@@ -185,6 +221,16 @@ void DrawScene(HWND hWnd)
 	hdc = BeginPaint(hWnd, &ps);
 	BOOL result = DrawBitmap(hdc, mario.X - mario.Radius, mario.Y - mario.Radius, hBmpMario);
     BOOL result2 = DrawBitmap(hdc, block1.X - block1.Radius, block1.Y - block1.Radius, hBmpblock1);
+	/*BOOL results[AMOUNTOFBLOCKS];
+	for (int i = 0; i < AMOUNTOFBLOCKS; i++) {
+		results[i] = DrawBitmap(hdc, blocks[i].X - blocks[i].Radius, blocks[i].Y - blocks[i].Radius, hBmpblock1);
+	}*/
+	BOOL results1 = DrawBitmap(hdc, blocks[0].X - blocks[0].Radius, blocks[0].Y - blocks[0].Radius, hBmpblocks1);
+	BOOL results2 = DrawBitmap(hdc, blocks[1].X - blocks[1].Radius, blocks[1].Y - blocks[1].Radius, hBmpblocks2);
+	BOOL results3 = DrawBitmap(hdc, blocks[2].X - blocks[2].Radius, blocks[2].Y - blocks[2].Radius, hBmpblocks3);
+	BOOL results4 = DrawBitmap(hdc, blocks[3].X - blocks[3].Radius, blocks[3].Y - blocks[3].Radius, hBmpblocks4);
+	BOOL results5 = DrawBitmap(hdc, blocks[4].X - blocks[4].Radius, blocks[4].Y - blocks[4].Radius, hBmpblocks5);
+
 	if (result == FALSE) {
 		MessageBox(NULL,
 			_T("Call to DrawBitmap failed!"),
@@ -283,8 +329,9 @@ void RecalculateBallPosition()
         }
 		break;
 	}
-    Collision(mario, block1);
-    
+	for (int i = 0; i < AMOUNTOFBLOCKS; i++) {
+		Collision(mario, blocks[i]);
+	}    
   
    
 }
