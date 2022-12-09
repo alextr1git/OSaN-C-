@@ -62,7 +62,7 @@ void RecalculateBallPosition();
 
 // User types
 enum DirectionX { LEFT, RIGHT, NONE_X };
-enum DirectionY { UP, DOWN, NONE_Y };
+enum DirectionY { UP, NONE_Y };
 
 typedef struct ball {
 	float X, Y, Radius;
@@ -76,7 +76,7 @@ typedef struct ball {
 // Global variables
 static TCHAR szWindowClass[] = _T("TheBall");
 static TCHAR szTitle[] = _T("The Ball");
-constexpr auto WND_WIDTH = 1000.0;
+constexpr auto WND_WIDTH = 1550.0;
 constexpr auto WND_HEIGHT = 600.0;
 HINSTANCE hInst;
 
@@ -84,9 +84,10 @@ Ball ball;
 int timer = 1;
 HBITMAP hBmpBall;
 
-constexpr auto START_SPEED = 20.0;
-constexpr auto BOOST = 0.25;
+constexpr auto START_SPEED = 7.0;
+constexpr auto BOOST = 0.3;
 constexpr auto ALLOWED_FAULT = 1.0;
+constexpr auto GRAVITATION = 3;
 
 // Forward declarations of functions included in this code module:
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -94,7 +95,6 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 void SetUpLeftHit();
 void SetUpRightHit();
 void SetUpUpHit();
-void SetUpDownHit();
 void Gravity();
 
 BOOL LeftHitten();

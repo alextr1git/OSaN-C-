@@ -491,44 +491,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_TIMER:
 		RecalculateBallSpeed();
 		RecalculateBallPosition();
-		Gravity();
+		//Gravity();
 		InvalidateRect(hWnd, NULL, TRUE);//обновить область рисования
-		break;
-	case WM_LBUTTONDOWN: // mouse click
-
-		GetCursorPos(&pos);
-		ScreenToClient(hWnd, &pos);
-		SetRect(&rc, ball.X - ball.Radius, ball.Y - ball.Radius, ball.X + ball.Radius, ball.Y + ball.Radius);
-		if (PtInRect(&rc, pos)) {
-			mflag = true;
-		}
-		break;
-	case WM_MOUSEMOVE:
-		if (mflag == true) {
-			GetCursorPos(&pos);
-			ScreenToClient(hWnd, &pos);
-			ball.X = pos.x;
-			ball.Y = pos.y;
-			if (TopHitten()) {
-				SetUpDownHit();
-				mflag = false;
-			}
-			if (BottomHitten()) {
-				SetUpUpHit();
-				mflag = false;
-			}
-			if (LeftHitten()) {
-				SetUpRightHit();
-				mflag = false;
-			}
-			if (RightHitten()) {
-				SetUpLeftHit();
-				mflag = false;
-			}
-		}
-		break;
-	case WM_LBUTTONUP:
-		mflag = false;
 		break;
 	case WM_KEYDOWN:
 		switch (wParam) {
@@ -538,23 +502,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case VK_RIGHT:
 			SetUpRightHit();
 			break;
-		case VK_UP:
+		case VK_SPACE:
 			SetUpUpHit();
-			break;
-		case VK_DOWN:
-			SetUpDownHit();
-			break;
-		}
-		break;
-	case WM_MOUSEWHEEL:
-		switch (GET_KEYSTATE_WPARAM(wParam)) {
-		case MK_SHIFT:
-			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) { SetUpRightHit(); }
-			else { SetUpLeftHit(); }
-			break;
-		default:
-			if (GET_WHEEL_DELTA_WPARAM(wParam) > 0) { SetUpUpHit(); }
-			else { SetUpDownHit(); }
 			break;
 		}
 		break;
@@ -577,7 +526,7 @@ void LoadResources()
 }
 
 void Gravity() {
-	ball.Y = ball.Y + 1;
+	ball.Y = ball.Y + GRAVITATION;
 }
 void InitializeBall(HWND hWnd)
 {
@@ -686,15 +635,17 @@ void RecalculateBallPosition()
 	switch (ball.directionY) {
 	case UP:
 		ball.Y -= ball.SpeedY - ball.BoostY / 2;
-		if (TopHitten()) { ball.directionY = DOWN; }
-		break;
-	case DOWN:
-		ball.Y += ball.SpeedY - ball.BoostY / 2;
-		if (BottomHitten()) { ball.directionY = UP; }
+		if (TopHitten()) { 
+            ball.directionY = NONE_Y;
+            /*ball.directionY = DOWN; */}
 		break;
 	case NONE_Y:
+        if (ball.Y < WND_HEIGHT - 65) {
+            Gravity();
+        }
 		break;
 	}
+   
 }
 
 void SetUpLeftHit()
@@ -714,13 +665,6 @@ void SetUpRightHit()
 void SetUpUpHit()
 {
 	ball.directionY = UP;
-	ball.SpeedY = START_SPEED;
-	ball.BoostY = BOOST;
-}
-
-void SetUpDownHit()
-{
-	ball.directionY = DOWN;
 	ball.SpeedY = START_SPEED;
 	ball.BoostY = BOOST;
 }
@@ -747,4 +691,5 @@ BOOL BottomHitten()
 {
 	if (ball.Y + ball.Radius >= WND_HEIGHT - 20) { return TRUE; }
 	else { return FALSE; }
+
 }
