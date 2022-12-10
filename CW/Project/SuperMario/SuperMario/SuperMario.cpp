@@ -477,7 +477,7 @@ void RecalculateMarioPosition()
 		int ASG = abs(sumGravity);
 		if (ASG > 47) {
 			gravityLevel = BASICGRAVITY;
-			spacePos = 500;
+			spacePos = 500; 
 		}
 		
 	}
